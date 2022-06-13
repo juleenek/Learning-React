@@ -16,9 +16,9 @@ export const LineItem: React.FC<Props> = ({
   handleDelete,
 }) => {
   return (
-    <li className="item" key={item.id}>
+    <li className='item'>
       <input
-        type="checkbox"
+        type='checkbox'
         onChange={() => handleCheck(item.id)}
         checked={item.checked}
       />
@@ -34,7 +34,7 @@ export const LineItem: React.FC<Props> = ({
       </label>
       <FaTrashAlt
         onClick={() => handleDelete(item.id)}
-        role="button"
+        role='button'
         tabIndex={0}
       />
     </li>
