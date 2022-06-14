@@ -16,7 +16,7 @@ export const Content: React.FC<Props> = ({
   handleDelete,
 }) => {
   return (
-    <main>
+    <>
       {items.length ? (
         <ItemList
           items={items}
@@ -26,6 +26,6 @@ export const Content: React.FC<Props> = ({
       ) : (
         <p style={{ marginTop: '2rem' }}>Your list is empty!</p>
       )}
-    </main>
+    </>
   );
 };
