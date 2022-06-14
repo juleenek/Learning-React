@@ -1,9 +1,9 @@
 import Header from './Components/Header';
 import { AddItem } from './Components/Item/AddItem';
 import { SearchItem } from './Components/Item/SearchItem';
-import { useState } from 'react';
 import { Content } from './Components/Content';
 import { Footer } from './Components/Footer';
+import { useState, useEffect } from 'react';
 
 type BlogItem = {
   id: number;
@@ -13,39 +13,37 @@ type BlogItem = {
 
 function App(): JSX.Element {
   const [items, setItems] = useState(
-    JSON.parse(localStorage.getItem('bloglist') as string)
+    JSON.parse(localStorage.getItem('bloglist') as string) || []
   );
   const [newItem, setNewItem] = useState('');
   const [search, setSearch] = useState('');
 
-  const setAndSaveItems = (newItems: BlogItem[]) => {
-    setItems(newItems);
-    localStorage.setItem('bloglist', JSON.stringify(newItems));
-  };
+  useEffect(() => {
+    localStorage.setItem('bloglist', JSON.stringify(items));
+  }, [items])
 
   const addItem = (item: string) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
     const myNewItem = { id, checked: false, item };
     const listItems = [...items, myNewItem];
-    setAndSaveItems(listItems);
+    setItems(listItems);
   };
 
   const handleCheck = (id: number) => {
     const listItems = items.map((item: BlogItem) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
-    setAndSaveItems(listItems);
+    setItems(listItems);
   };
 
   const handleDelete = (id: number) => {
     const listItems = items.filter((item: BlogItem) => item.id !== id);
-    setAndSaveItems(listItems);
+    setItems(listItems);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newItem) return;
-    console.log(newItem);
     addItem(newItem);
     setNewItem('');
   };
