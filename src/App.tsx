@@ -4,6 +4,7 @@ import { SearchItem } from './Components/Item/SearchItem';
 import { Content } from './Components/Content';
 import { Footer } from './Components/Footer';
 import { useState, useEffect } from 'react';
+import { apiRequest } from './apiRequest';
 
 type BlogItem = {
   id: number;
@@ -37,23 +38,52 @@ function App(): JSX.Element {
     (async () => await fetchItems())();
   }, []);
 
-  const addItem = (item: string) => {
+  const addItem = async (item: string) => {
     const id = items.length ? items[items.length - 1].id + 1 : 1;
     const myNewItem = { id, checked: false, item };
     const listItems = [...items, myNewItem];
     setItems(listItems);
+
+    const postOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(myNewItem),
+    };
+    const result = await apiRequest(API_URL, postOptions);
+    if (result) setFetchError(result);
   };
 
-  const handleCheck = (id: number) => {
+  const handleCheck = async (id: number) => {
     const listItems = items.map((item: BlogItem) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
     setItems(listItems);
+
+    const myItem = listItems.filter((item) => item.id === id);
+    const updateOption = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ checked: myItem[0].checked }),
+    };
+    const reqUrl = `${API_URL}/${id}`;
+    const result = await apiRequest(reqUrl, updateOption);
+    if (result) setFetchError(result);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     const listItems = items.filter((item: BlogItem) => item.id !== id);
     setItems(listItems);
+
+    const deleteOptions = {
+      method: 'DELETE',
+    };
+    const reqUrl = `${API_URL}/${id}`;
+    const result = await apiRequest(reqUrl, deleteOptions);
+    if (result) setFetchError(result);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
